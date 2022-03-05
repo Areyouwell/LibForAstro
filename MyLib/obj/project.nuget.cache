@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "rE5LXuLth2wuwgj+2EkekN/6G5o1VudOr9chznLcF0osPYHHrJgxwBKg1VM6T1wgQpOzj5Pq6Q+fNZu06cVJWg==",
+  "success": true,
+  "projectFilePath": "D:\\Lesson\\programming\\Си #\\astro\\Test\\MyLib\\Windage.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kliem\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\kliem\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

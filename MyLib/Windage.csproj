@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Core">
+      <HintPath>..\..\OrbitTools\Core\obj\Debug\netstandard2.0\Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Orbit">
+      <HintPath>..\..\OrbitTools\Orbit\obj\Debug\netstandard2.0\Orbit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

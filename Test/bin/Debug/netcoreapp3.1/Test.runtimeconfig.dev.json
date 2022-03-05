@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\kliem\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\kliem\\.nuget\\packages"
+    ]
+  }
+}

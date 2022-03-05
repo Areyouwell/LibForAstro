@@ -1,0 +1,14 @@
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Windage.deps.json
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Windage.dll
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Windage.pdb
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Core.dll
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Orbit.dll
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Core.pdb
+D:\Lesson\programming\Си #\astro\Test\MyLib\bin\Debug\netstandard2.0\Orbit.pdb
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.csprojAssemblyReference.cache
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.AssemblyInfoInputs.cache
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.AssemblyInfo.cs
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.csproj.CoreCompileInputs.cache
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.csproj.CopyComplete
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.dll
+D:\Lesson\programming\Си #\astro\Test\MyLib\obj\Debug\netstandard2.0\Windage.pdb
