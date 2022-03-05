@@ -43,7 +43,7 @@ namespace Test
         //Находим нужные переменные для вычисления альфа
         private static (double, double) CalculateAlpha(Tle tle1, Tle tle2, Orbit orb1)
         {
-            double v1 = ModuleVel(tle1);
+            double v1 = ModuleVel(tle1); //Считаем модуль скорости
             double v2 = ModuleVel(tle2);
             double r1 = ModuleDistance(tle1);
             double r2 = ModuleDistance(tle2);
