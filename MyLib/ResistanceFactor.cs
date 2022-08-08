@@ -1,83 +1,105 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Zeptomoby.OrbitTools;
 
 namespace Windage
 {
     public class ResistanceFactor
     {
-        //Формируем словарь из коэф. альфа и соответствующих дат
-        public static Dictionary<DateTime, double>[] FormResultDictionary(List<List<string>> SortedTle)
+        public static Dictionary<DateTime, double> AtmosphericResistanceCoefficient(List<List<string>> SortedTle)
         {
-            Dictionary<DateTime, double> resultKinet = new Dictionary<DateTime, double>();
-            Dictionary<DateTime, double> resultPoten = new Dictionary<DateTime, double>();
-            var resultForTwoMethod = new Dictionary<DateTime, double>[2];
+            Dictionary<DateTime, double> alphaInTime = new Dictionary<DateTime, double>();
             for (int i = 0; i < SortedTle.Count - 1; i++)
             {
                 Tle tle1 = new Tle("", SortedTle[i][0], SortedTle[i][1]);
                 Tle tle2 = new Tle("", SortedTle[i + 1][0], SortedTle[i + 1][1]);
+                Satellite sat1 = new Satellite(tle1);
+                Satellite sat2 = new Satellite(tle2);
                 Orbit orb1 = new Orbit(tle1);
-                var resAlpha = CalculateAlpha(tle1, tle2, orb1);
-                resultKinet.Add(ConvertNumberToDate(tle1.Epoch), resAlpha.Item1);
-                resultPoten.Add(ConvertNumberToDate(tle1.Epoch), resAlpha.Item2);
+                DateTime dayOfYear = ConvertNumberToDate(tle1.Epoch);
+                double numOfRev = double.Parse(tle1.MeanMotion.Substring(0, 11).Replace('.', ','));
+                var vAp1AndVPer1 = GetVelOfApAndPer(sat1, numOfRev, dayOfYear);
+                var vAp2AndVPer2 = GetVelOfApAndPer(sat2, numOfRev, dayOfYear);
+                double vAp1 = vAp1AndVPer1.Item1;
+                double vAp2 = vAp2AndVPer2.Item1;
+                double vPer1 = vAp1AndVPer1.Item2;
+                double vPer2 = vAp2AndVPer2.Item2;
+                double alphaApogee = CalculateCoeff(vAp1, vAp2, numOfRev, orb1.Apogee, orb1.Perigee, orb1.Eccentricity);
+                double alphaPerigee = CalculateCoeff(vPer1, vPer2, numOfRev, orb1.Apogee, orb1.Perigee, orb1.Eccentricity);
+                alphaInTime.Add(dayOfYear, (alphaApogee + alphaPerigee) / 2);
             }
-            resultForTwoMethod[0] = resultKinet;
-            resultForTwoMethod[1] = resultPoten;
-            return resultForTwoMethod;
+            return alphaInTime;
+        }   
+
+        private static (double, double) GetVelOfApAndPer(Satellite sat, double numOfRev, DateTime dayOfYear)
+        {
+            int timeInterval = (int)Math.Round(24 * 120 / numOfRev);
+            Dictionary<DateTime, double> radVecOfTime = GetRadiusVecOfTime(sat, dayOfYear, timeInterval);
+            var VelosOfApAndPer = LookForApoAndPerVelos(sat, radVecOfTime);
+            double vAp = VelosOfApAndPer.Item1;
+            double vPer = VelosOfApAndPer.Item2;
+            return (vAp, vPer);
         }
 
-        //Находим нужные переменные для вычисления альфа
-        private static (double, double) CalculateAlpha(Tle tle1, Tle tle2, Orbit orb1)
+        private static Dictionary<DateTime, double> GetRadiusVecOfTime(Satellite sat, DateTime dayOfYear, int timeInterval)
         {
-            double v1 = ModuleVel(tle1);
-            double v2 = ModuleVel(tle2);
-            double r1 = ModuleDistance(tle1);
-            double r2 = ModuleDistance(tle2);
-            double numOfRev = double.Parse(tle1.MeanMotion.Substring(0, 11).Replace('.', ','));
-            double apogee = orb1.Apogee;
-            double perigee = orb1.Perigee;
-            double eccent = orb1.Eccentricity;
-            double AlphaKin = CalculateAlphaKinetic(v1, v2, numOfRev, apogee, perigee, eccent);
-            double AlphaPot = CalculateAlphaPotential(r1, r2, v1, numOfRev, apogee, perigee, eccent);
-            return (AlphaKin, AlphaPot);
+            Dictionary<DateTime, double> radVecOfTime = new Dictionary<DateTime, double>();
+            for (int j = 0; j < timeInterval; j++)
+            {
+                Eci eci = sat.PositionEci(dayOfYear);
+                double radVec = ModuleRadius(eci);
+                radVecOfTime.Add(dayOfYear, radVec);
+                dayOfYear = dayOfYear.AddSeconds(30);
+            }
+            return radVecOfTime;
+        }
+
+        private static (double, double) LookForApoAndPerVelos(Satellite sat, Dictionary<DateTime, double> radVecOfTime)
+        {
+            DateTime timeOfApogee = new DateTime();
+            DateTime timeOfPerigee = new DateTime();
+            double radApogee = radVecOfTime.Values.Max();
+            double radPerigee = radVecOfTime.Values.Min();
+            foreach (var item in radVecOfTime)
+            {
+                if (timeOfApogee != new DateTime() && timeOfPerigee != new DateTime()) break;
+                if (item.Value == radApogee)
+                {
+                    timeOfApogee = item.Key;
+                }
+                if (item.Value == radPerigee)
+                {
+                    timeOfPerigee = item.Key;
+                }
+            }
+            Eci eci1 = sat.PositionEci(timeOfApogee);
+            Eci eci2 = sat.PositionEci(timeOfPerigee);
+            double vAp = ModuleVelos(eci1);
+            double vPer = ModuleVelos(eci2);
+            return (vAp, vPer);
+        }
+
+        private static double ModuleVelos(Eci eci)
+        {
+            return Math.Sqrt(eci.Velocity.X * eci.Velocity.X + eci.Velocity.Y * eci.Velocity.Y
+                + eci.Velocity.Z * eci.Velocity.Z);
+        }
+
+        private static double ModuleRadius(Eci eci)
+        {
+            return Math.Sqrt(eci.Position.X * eci.Position.X + eci.Position.Y * eci.Position.Y +
+                    eci.Position.Z * eci.Position.Z);
         }
 
         //Подставляем в формулу
-        private static double CalculateAlphaKinetic(double v1, double v2, double numOfRev, double apogee,
+        private static double CalculateCoeff(double v1, double v2, double numOfRev, double apogee,
                                                     double perigee, double eccent)
         {
             int weightSatel = 1900; // масса ступника
             return Math.Abs(weightSatel * (v2 * v2 - v1 * v1) / (2 * numOfRev * v1 * v1
                 * CalcLenEllipse(apogee, perigee, eccent)));
-        }
-
-        //Подставляем в формулу
-        private static double CalculateAlphaPotential(double r1, double r2, double v1, double numOfRev,
-                                                      double apogee, double perigee, double eccent)
-        {
-            int weightSatel = 1900; // Масса спутника
-            const double constGmultiplyM = 398345.740; //Умножили G на массу Земли M (размерность км^3 / с^2)
-            return Math.Abs(weightSatel * constGmultiplyM * 2 * ((1 / r2) - (1 / r1)) / (numOfRev * v1 * v1
-                * CalcLenEllipse(apogee, perigee, eccent)));
-        }
-
-        //Найдем модуль скорости
-        private static double ModuleVel(Tle tle)
-        {
-            Satellite sat = new Satellite(tle);
-            Eci eci = sat.PositionEci(0);
-            return Math.Sqrt(eci.Velocity.X * eci.Velocity.X + eci.Velocity.Y * eci.Velocity.Y
-                + eci.Velocity.Z * eci.Velocity.Z);
-        }
-
-        //Найдем модуль радиус вектора
-        private static double ModuleDistance(Tle tle)
-        {
-            Satellite sat = new Satellite(tle);
-            Eci eci = sat.PositionEci(0);
-            return Math.Sqrt(eci.Position.X * eci.Position.X + eci.Position.Y * eci.Position.Y
-                + eci.Position.Z * eci.Position.Z);
         }
 
         //Перевод количества дней в дату
@@ -160,6 +182,26 @@ namespace Windage
             double a = (apogee + perigee + 2 * radEarth) / 2;
             double b = a * Math.Sqrt(1 - eccent * eccent);
             return (4 * (Math.PI * a * b + (a - b) * (a - b)) / (a + b));
+        }
+
+        //GetRadiusFull
+        public static Dictionary<DateTime, double> GetRadiusFull(List<List<string>> SortedTle)
+        {
+            Dictionary<DateTime, double> radiusInTime = new Dictionary<DateTime, double>();
+            for (int i = 0; i < SortedTle.Count - 1; i++)
+            {
+                Tle tle1 = new Tle("", SortedTle[i][0], SortedTle[i][1]);
+                Satellite sat1 = new Satellite(tle1);
+                DateTime dayOfYear = ConvertNumberToDate(tle1.Epoch);
+                //1440 минут в 24 часах, соответственно если мы получаем радиус каждые 2 минуты, то цикл выполняется 720
+                for (int j = 0; j < 720; j++)
+                {
+                    Eci eci = sat1.PositionEci(dayOfYear);
+                    radiusInTime.Add(dayOfYear, ModuleRadius(eci));
+                    dayOfYear = dayOfYear.AddMinutes(2);
+                }
+            }
+            return radiusInTime;
         }
     }
 }

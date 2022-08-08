@@ -16,3 +16,6 @@ D:\Lesson\programming\Си #\astro\Test\Test\bin\Debug\netcoreapp3.1\Core.pdb
 D:\Lesson\programming\Си #\astro\Test\Test\bin\Debug\netcoreapp3.1\Orbit.pdb
 D:\Lesson\programming\Си #\astro\Test\Test\obj\Debug\netcoreapp3.1\Test.csproj.CopyComplete
 D:\Lesson\programming\Си #\astro\Test\Test\obj\Debug\netcoreapp3.1\Test.csprojAssemblyReference.cache
+D:\Lesson\programming\Си #\astro\Test\Test\bin\Debug\netcoreapp3.1\Interop.Microsoft.Office.Interop.Excel.dll
+D:\Lesson\programming\Си #\astro\Test\Test\obj\Debug\netcoreapp3.1\Interop.Microsoft.Office.Interop.Excel.dll
+D:\Lesson\programming\Си #\astro\Test\Test\obj\Debug\netcoreapp3.1\Test.csproj.ResolveComReference.cache

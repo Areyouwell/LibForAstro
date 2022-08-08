@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "eBpdINITzgHTndgRCqDZqFTZFWo+22kkTkf3CBDV7S91sL3XcJcA4CW+vQ+ZWU6xuuWDuZDwz+2Bmcn+nsBYog==",
+  "dgSpecHash": "WCoihVUeUwT2UxIEaQwmYq1tv1qlIvttzyCHkcwS6B0PpBu4ELXRhRqtT7gv4SnYoVWEGNooGTdUUxyjEg3GNw==",
   "success": true,
   "projectFilePath": "D:\\Lesson\\programming\\Си #\\astro\\Test\\Test\\Test.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\kliem\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.27\\microsoft.netcore.app.host.win-x64.3.1.27.nupkg.sha512",
+    "C:\\Users\\kliem\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\kliem\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\kliem\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512"
+  ],
   "logs": []
 }
